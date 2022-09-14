@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstdlib>
 #include <map>
 
 
@@ -22,12 +21,12 @@ std::vector<std::string> split(std::string str, char seperator) {
     return splited_str;
 }
         
-void read_csv(std::string filepath) {
+std::map<std::string, std::vector<std::string> > read_csv(std::string filepath) {
     std::string line;
     std::ifstream file (filepath);
 
     std::vector<std::string> col_names;
-    std::map< std::string, std::vector<std::string> > data_tmp;
+    std::map<std::string, std::vector<std::string> > data;
 
     int num_cols;
     if ( file.is_open() ) {
@@ -36,8 +35,7 @@ void read_csv(std::string filepath) {
         std::vector<std::string> col_names = split(line, ',');
         int num_cols = col_names.size();
 
-        int line_number = 1;
-    
+        int line_number = 1;    
         while ( std::getline(file, line) ) {
             // std::cout << line << std::endl;
             std::vector<std::string> splited_values = split(line, ',');
@@ -46,13 +44,15 @@ void read_csv(std::string filepath) {
             for (int i = 0; i < num_cols; ++i) {
                 std::string key = col_names[i];
                 std::string value = splited_values[i];
-                data_tmp[key].push_back(value);
+                data[key].push_back(value);
             }
         }
-
         file.close();
+
+        return data;
     } else {
-        std::cout << "Unable to open " << filepath << std::endl;
+        std::cerr << "Failed to open " << filepath << ": " << std::strerror(errno) << std::endl;
+        exit(0);
     }
 }
 
