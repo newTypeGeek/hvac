@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cmath>
 
 
 std::vector<std::string> split(std::string str, char seperator) {
@@ -56,8 +57,46 @@ std::map<std::string, std::vector<std::string> > read_csv(std::string filepath) 
     }
 }
 
+bool isnan_str(std::string str) {
+    std::string nan_strs[] = {"nan", "n/a", "", "none", "null"};
+    for (std::string s : nan_strs) {
+        if (s == str) {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::map<std::string, std::vector<double>> cast_to_numeric_type(
+    std::map<std::string, std::vector<std::string>> raw_data
+) {
+    std::map<std::string, std::vector<double>> numeric_data;
+    for (auto const& [col_name, data] : raw_data) {
+        for (std::string datum : data) {
+            double datum_;
+            if (isnan_str(datum)) {
+                datum_ = std::nan("1");
+            }
+            datum_ = std::stod(datum);
+            numeric_data[col_name].push_back(datum_);
+            
+        }
+    }
+    return numeric_data;
+}
+
 int main() {
-    std::string filepath = "data.csv";
-    read_csv(filepath);
+    std::string filepath = "data_simple.csv";
+    std::map<std::string, std::vector<std::string>> raw_data = read_csv(filepath);
+    std::map<std::string, std::vector<double>> numeric_data = cast_to_numeric_type(raw_data);
+
+    for (auto &[key, val] : numeric_data) {
+        std::cout << key << " : ";
+        for (double v : val) {
+            std::cout << v << " ";
+        }
+        std::cout << std::endl;
+    }
+
     return 0;
 }
