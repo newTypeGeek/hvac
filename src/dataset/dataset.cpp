@@ -14,11 +14,12 @@ std::vector<std::string> split(std::string str, char seperator) {
         if (str[i] != seperator) {
             tmp += str[i];
         } else {
-            // std::cout << tmp << "   ";
             splited_str.push_back(tmp);
             tmp = "";
         }
     }
+    // don't forget the last element
+    splited_str.push_back(tmp);
     return splited_str;
 }
         
