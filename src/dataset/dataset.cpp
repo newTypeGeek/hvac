@@ -47,6 +47,8 @@ std::map<std::string, std::vector<std::string> > read_csv(std::string filepath) 
                 std::string key = col_names[i];
                 std::string value = splited_values[i];
                 data[key].push_back(value);
+
+                std::cout << "Set " << value << " to " << key << std::endl;
             }
         }
         file.close();
@@ -76,9 +78,10 @@ std::map<std::string, std::vector<double>> cast_to_numeric_type(
         for (std::string datum : data) {
             double datum_;
             if (isnan_str(datum)) {
-                datum_ = std::nan("1");
+                datum_ = std::numeric_limits<double>::quiet_NaN();
+            } else {
+                datum_ = std::stod(datum);
             }
-            datum_ = std::stod(datum);
             numeric_data[col_name].push_back(datum_);
             
         }
